@@ -85,6 +85,8 @@ unsigned char **sample_grid(ppm_image *image, int step_x, int step_y, unsigned c
         }
     }
 
+    grid[p][q] = 0;
+
     // last sample points have no neighbors below / to the right, so we use pixels on the
     // last row / column of the input image for them
     for (int i = 0; i < p; i++) {
@@ -213,7 +215,7 @@ int main(int argc, char *argv[]) {
     // 4. Write output
     write_ppm(scaled_image, argv[2]);
 
-    free_resources(scaled_image, contour_map, grid, step_x);
+    // free_resources(scaled_image, contour_map, grid, step_x);
 
     return 0;
 }

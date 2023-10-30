@@ -1,0 +1,39 @@
+# Description
+
+    >> Marching Squares is a graphics algorithm introduced in the 1980s that can
+       be used to delimit contours in an image. It can be used to draw elevation
+       lines on topographic maps, temperatures on thermal maps, pressure 
+       points onpressure field maps, etc.
+
+    >> This is an optimization of the original algorithm, which uses pthreads to
+       parallelize the execution of the algorithm. The scallability of the
+       algorithm is improved by using a dynamic number of threads(command line
+       input). The speed up for 2 threads is 1.89x and for 4 threads is 3.71x on
+       my machine.
+
+# How to run
+
+    >> The full test suite can be run by using the following command in src:
+            ./local.sh checker
+
+    >> There is also a script that can be used to run a single test case:
+            ./run_single.sh <test_number>        
+
+# Implementation
+
+    >> The parallelization is done for the rescale of the image, the first part
+       of the Marching Squares algorithm (sample grid) and the second part (march).
+       I/O is not parallelized due to extra overhead.
+
+    >> In the process of parallelization, two barriers were used in order to 
+       synchronize the threads. The first barrier is used to synchronize the
+       threads after the rescaling of the image and the second barrier is used
+       after the first part of the Marching Squares algorithm (sample grid).
+
+    >> The images that are larger than 2048x2048 are downscaled to 2048x2048
+       before the execution of the algorithm. This handled in the thread function
+       by using a flag that is received as a parameter (needs_rescaled).
+
+    >> The formula that is used for parallelization is the following:
+            int start = ID * (double)N / P;
+            int end = min((ID + 1) * (double)N / P, N);        
